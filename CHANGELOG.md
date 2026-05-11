@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.8.0 - 2026-05-11
+
+- feat: add a _non-interactive_ mode through `--non-interactive` flag so that tcping can run in the background using `nohup` or `disown`
+- feat: add support for `host:port` format in command arguments in [362](https://github.com/pouriyajamshidi/tcping/pull/362) thanks to @bingoohuang
+- fix: omit printing the IP address twice when the given target is an IP address itself
+- fix: add missing comma separator in no-color statistics output in [376](https://github.com/pouriyajamshidi/tcping/issues/376) thanks to @clarabennettdev
+- fix: version typo resulting in erroneous update message raised in [313](https://github.com/pouriyajamshidi/tcping/issues/313)
+- build: bump Golang base image to `1.26.3-alpine3.23`
+- documents: fix typo in the Chinese README in [386](https://github.com/pouriyajamshidi/tcping/pull/386) thanks to @peeweep
+- documents: clarify the difference between static and dynamic binaries in README raised in [357](https://github.com/pouriyajamshidi/tcping/issues/357)
+
 ## v2.7.1 - 2025-01-26
 
 - release: add tcping to [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget) [#113](https://github.com/pouriyajamshidi/tcping/issues/113)

@@ -19,7 +19,7 @@ import (
 	"github.com/google/go-github/v45/github"
 )
 
-var version = "" // set at compile time
+var version = "" // set at compile time through the Makefile
 
 const (
 	owner      = "pouriyajamshidi"
@@ -118,6 +118,7 @@ type userInput struct {
 	shouldRetryResolve       bool
 	showFailuresOnly         bool
 	showSourceAddress        bool
+	nonInteractive           bool // Enable the program to run in the background. e.g. nohup, disown
 }
 
 type genericUserInputArgs struct {
@@ -128,6 +129,7 @@ type genericUserInputArgs struct {
 	intName              *string
 	showFailuresOnly     *bool
 	showSourceAddress    *bool
+	nonInteractive       *bool
 	args                 []string
 }
 
@@ -361,6 +363,7 @@ func setGenericArgs(tcping *tcping, genericArgs genericUserInputArgs) {
 	tcping.userInput.showFailuresOnly = *genericArgs.showFailuresOnly
 
 	tcping.userInput.showSourceAddress = *genericArgs.showSourceAddress
+	tcping.userInput.nonInteractive = *genericArgs.nonInteractive
 }
 
 // processUserInput gets and validate user input
@@ -371,6 +374,7 @@ func processUserInput(tcping *tcping) {
 	probesBeforeQuit := flag.Uint("c", 0, "stop after <n> probes, regardless of the result. By default, no limit will be applied.")
 	outputJSON := flag.Bool("j", false, "output in JSON format.")
 	prettyJSON := flag.Bool("pretty", false, "use indentation when using json output format. No effect without the '-j' flag.")
+	nonInteractive := flag.Bool("non-interactive", false, "let tcping run in the background, for instance using nohup or disown")
 	noColor := flag.Bool("no-color", false, "do not colorize output.")
 	showTimestamp := flag.Bool("D", false, "show timestamp in output.")
 	saveToCSV := flag.String("csv", "", "path and file name to store tcping output to CSV file...If user prompts for stats, it will be saved to a file with the same name and _stats appended.")
@@ -414,7 +418,6 @@ func processUserInput(tcping *tcping) {
 	// host and port must be specified
 	// Support both "host port" and "host:port" formats
 	args = parseHostPortArgs(args)
-	
 	if len(args) != 2 {
 		usage()
 	}
@@ -434,6 +437,7 @@ func processUserInput(tcping *tcping) {
 		intName:              interfaceName,
 		showFailuresOnly:     showFailuresOnly,
 		showSourceAddress:    showSourceAddress,
+		nonInteractive:       nonInteractive,
 		args:                 args,
 	}
 
@@ -937,7 +941,9 @@ func main() {
 	tcping.printStart(tcping.userInput.hostname, tcping.userInput.port)
 
 	stdinchan := make(chan bool)
-	go monitorSTDIN(stdinchan)
+	if !tcping.userInput.nonInteractive {
+		go monitorSTDIN(stdinchan)
+	}
 
 	var probeCount uint
 	for {

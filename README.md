@@ -61,6 +61,8 @@ Check out the [demos](#demos) to get a look and feel of **tcping**.
 
 We offer prebuilt binaries for various operating systems ([Windows](#windows), [Linux](#linux---debian-and-derivatives), [macOS](#macos), [Docker](#alternative-ways)) and architectures (_amd64_, _arm64_), which can be found on the [release page](https://github.com/pouriyajamshidi/tcping/releases/latest/).
 
+There are static and dynamic versions available. In simple terms, static binaries include all needed code inside one file, while dynamic binaries load some code from shared operating system libraries when they run.
+
 Once you are done with the download and installation, head to the [usage](#usage) section.
 
 ### Windows
@@ -193,7 +195,7 @@ These are some additional ways in which **tcping** can be installed:
 tcping www.example.com 443
 ```
 
-2. You can also use the `host:port` format for convenience (this will be available in version 3):
+1. You can also use the `host:port` format for convenience:
 
 ```bash
 tcping www.example.com:443
@@ -297,6 +299,7 @@ The following flags are available to control the behavior of **tcping**:
 | `-u`                    | Check for updates                                                                                                 |
 | `--show-failures-only`  | Only show probe failures and omit printing probe success messages                                                 |
 | `--show-source-address` | Show the source IP address and port used for probes                                                               |
+| `--non-interactive`     | Run in background mode. e.g. `nohup` or `disown`                                                                  |
 
 > [!TIP]
 > Without specifying the `-4` and `-6` flags, tcping will randomly select an IP address based on DNS lookups.
